@@ -7,10 +7,7 @@ lib/NetSDS/Conf.pm
 lib/NetSDS/Const.pm
 lib/NetSDS/Feature.pm
 lib/NetSDS/Logger.pm
-Makefile.PL
 MANIFEST			This list of files
-META.yml
-README
 samples/app_feature.conf
 samples/app_feature.pl
 samples/app_simple.pl
@@ -21,3 +18,6 @@ samples/test_fcgi.pl
 t/01_load.t
 t/02_pod.t
 t/03_pod_coverage.t
+Makefile.PL
+README
+META.yml

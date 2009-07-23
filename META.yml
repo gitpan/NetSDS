@@ -1,6 +1,6 @@
 ---
 name: NetSDS
-version: 1.02
+version: 1.020
 author:
   - 'Net.Style Development Team <info@netstyle.com.ua>'
 abstract: Core Perl5 modules for NetSDS VAS development framework
@@ -22,8 +22,8 @@ requires:
   POSIX: 0
   Proc::Daemon: 0
   Proc::PID::File: 0
-  Storable: 0
-  Unix::Syslog: 0
+  Storable: 2.15
+  Unix::Syslog: 1.0
   perl: 5.008
   version: 0
 build_requires:
@@ -34,28 +34,28 @@ build_requires:
 provides:
   NetSDS:
     file: lib/NetSDS.pm
-    version: 1.02
+    version: 1.020
   NetSDS::App:
     file: lib/NetSDS/App.pm
-    version: 1.02
+    version: 1.020
   NetSDS::App::FCGI:
     file: lib/NetSDS/App/FCGI.pm
-    version: 0.02
+    version: 1.020
   NetSDS::Class::Abstract:
     file: lib/NetSDS/Class/Abstract.pm
-    version: 1.01
+    version: 1.020
   NetSDS::Conf:
     file: lib/NetSDS/Conf.pm
-    version: 0.02
+    version: 1.020
   NetSDS::Const:
     file: lib/NetSDS/Const.pm
-    version: 0.01
+    version: 1.020
   NetSDS::Feature:
     file: lib/NetSDS/Feature.pm
-    version: 1.0
+    version: 1.020
   NetSDS::Logger:
     file: lib/NetSDS/Logger.pm
-    version: 0.01
+    version: 1.020
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

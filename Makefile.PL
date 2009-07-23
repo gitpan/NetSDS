@@ -11,7 +11,7 @@ WriteMakefile
           'PREREQ_PM' => {
                            'CGI::Fast' => '0',
                            'CGI::Cookie' => '0',
-                           'Storable' => '0',
+                           'Storable' => '2.15',
                            'CGI' => '0',
                            'Test::Pod' => '0',
                            'POSIX' => '0',
@@ -27,7 +27,7 @@ WriteMakefile
                            'Class::Accessor' => '0',
                            'Class::ErrorHandler' => '0',
                            'Test::More' => '0',
-                           'Unix::Syslog' => '0',
+                           'Unix::Syslog' => '1.0',
                            'Clone' => '0',
                            'Proc::Daemon' => '0'
                          }
