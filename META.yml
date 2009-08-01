@@ -1,6 +1,6 @@
 ---
 name: NetSDS
-version: 1.020
+version: 1.100
 author:
   - 'Net.Style Development Team <info@netstyle.com.ua>'
 abstract: Core Perl5 modules for NetSDS VAS development framework
@@ -16,6 +16,8 @@ requires:
   Class::ErrorHandler: 0
   Clone: 0
   Config::General: 0
+  DBD::Pg: 0
+  DBI: 0
   Data::Structure::Util: 0
   FCGI: 0
   Getopt::Long: 0
@@ -34,7 +36,7 @@ build_requires:
 provides:
   NetSDS:
     file: lib/NetSDS.pm
-    version: 1.020
+    version: 1.100
   NetSDS::App:
     file: lib/NetSDS/App.pm
     version: 1.020
@@ -50,6 +52,9 @@ provides:
   NetSDS::Const:
     file: lib/NetSDS/Const.pm
     version: 1.020
+  NetSDS::DBI:
+    file: lib/NetSDS/DBI.pm
+    version: 1.200
   NetSDS::Feature:
     file: lib/NetSDS/Feature.pm
     version: 1.020
