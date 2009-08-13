@@ -56,18 +56,17 @@ use 5.8.0;
 use strict;
 use warnings;
 
-use base qw(
-  NetSDS::Class::Abstract
-);
+use base 'NetSDS::Class::Abstract';
 
-use version; our $VERSION = '1.020';
+use NetSDS;
+use version; our $VERSION = NetSDS->VERSION;
 
 use NetSDS::Logger;
 use NetSDS::Conf;
 
 use Proc::Daemon;
 use Proc::PID::File;
-use Getopt::Long;
+use Getopt::Long qw(:config auto_version auto_help pass_through);
 
 use POSIX;
 use Carp;
@@ -428,16 +427,16 @@ sub initialize {
 
 	} ## end if ( $this->{has_conf})
 
-	# Process infinite loop
-	if ( $this->{infinite} ) {
-		$this->{to_finalize} = 0;
-	} else {
-		$this->{to_finalize} = 1;
-	}
-
 	# Add signal handlers
 	$SIG{INT} = sub {
+		$this->speak("SIGINT caught");
 		$this->log( "warn", "SIGINT caught" );
+		$this->{to_finalize} = 1;
+	};
+
+	$SIG{TERM} = sub {
+		$this->speak("SIGTERM caught");
+		$this->log( "warn", "SIGTERM caught" );
 		$this->{to_finalize} = 1;
 	};
 
@@ -462,12 +461,15 @@ sub use_auto_features {
 		return $this->error("use_auto_features() called without setting auto_features property");
 	}
 
+	# Check all sections <feature name> in configuration
 	if ( $this->conf and $this->conf->{feature} ) {
 		my @features = ( keys %{ $this->conf->{feature} } );
+
 		foreach my $f (@features) {
 			my $f_conf = $this->conf->{feature}->{$f};
 			my $class  = $f_conf->{class};
 
+			# Really add feature object
 			$this->add_feature( $f, $class, $f_conf );
 
 		}
@@ -519,6 +521,9 @@ sub add_feature {
 
 	# Send verbose output
 	$this->speak("Feature added: $name => $class");
+
+	# Write log message
+	$this->log( "info", "Feature added: $name => $class" );
 
 } ## end sub add_feature
 #***********************************************************************
@@ -615,13 +620,19 @@ sub main_loop {
 
 	# Run processing hooks
 	while ( !$this->{to_finalize} ) {
+
 		$ret = $this->process();
+
+		# Process infinite loop
+		if ( !$this->{infinite} or $this->{to_finalize} ) {
+			$this->{to_finalize} = 1;
+		}
 	}
 
 	# Run finalize hooks
 	$ret = $this->stop();
 
-}
+} ## end sub main_loop
 
 #***********************************************************************
 
@@ -654,7 +665,7 @@ sub log {
 
 	return undef;
 
-}    ## sub log
+} ## sub log
 
 #***********************************************************************
 
@@ -707,9 +718,7 @@ sub speak {
 
 #***********************************************************************
 
-=item B<config_file($file_name)> - creates default configuration file name
-
-Ask andrei@ about this.
+=item B<config_file($file_name)> - determine full configuration file name
 
 =cut 
 

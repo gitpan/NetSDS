@@ -40,9 +40,10 @@ use warnings;
 
 use DBI;
 
-use base qw(NetSDS::Class::Abstract);
+use base 'NetSDS::Class::Abstract';
 
-use version; our $VERSION = "1.200";
+use NetSDS;
+use version; our $VERSION = NetSDS->VERSION;
 
 #===============================================================================
 
@@ -102,15 +103,18 @@ sub new {
 		return $class->error("Cant initialize DBI connection without DSN");
 	}
 
+	# initialize parent class
 	my $this = $class->SUPER::new(
 		dbh    => undef,
 		dsn    => $params{dsn},
-		user   => '',
-		passwd => '',
+		login  => $params{login},
+		passwd => $params{passwd},
 		attrs  => {},
 		sets   => [],
+		%params,
 	);
 
+	# Create object accessor for DBMS handler
 	$this->mk_accessors('dbh');
 
 	# Add initialization SQL queries
@@ -125,7 +129,6 @@ sub new {
 	return $this;
 
 } ## end sub new
-
 
 #***********************************************************************
 
@@ -167,7 +170,8 @@ sub call {
 	}
 
 	# Prepare cached SQL query
-	my $sth = $this->dbh->prepare_cached($sql);
+	# FIXME my $sth = $this->dbh->prepare_cached($sql);
+	my $sth = $this->dbh->prepare($sql);
 	unless ($sth) {
 		return $this->error("Cant prepare SQL query: $sql");
 	}
@@ -221,10 +225,11 @@ sub _add_attrs {
 	return %attrs;
 }
 
-
 #***********************************************************************
 
 =item B<_check_connection()> - ping and reconnect
+
+Internal method checking connection and implement reconnect
 
 =cut 
 
@@ -243,10 +248,11 @@ sub _check_connection {
 	}
 }
 
-
 #***********************************************************************
 
 =item B<_connect()> - connect to DBMS
+
+Internal method starting connection to DBMS
 
 =cut 
 

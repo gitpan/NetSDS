@@ -1,7 +1,9 @@
 Build.PL
+Changes
 lib/NetSDS.pm
 lib/NetSDS/App.pm
 lib/NetSDS/App/FCGI.pm
+lib/NetSDS/App/JSRPC.pm
 lib/NetSDS/Class/Abstract.pm
 lib/NetSDS/Conf.pm
 lib/NetSDS/Const.pm
@@ -14,6 +16,7 @@ META.yml
 README
 samples/app_feature.conf
 samples/app_feature.pl
+samples/app_jsrpc.fcgi
 samples/app_simple.pl
 samples/daemon.pl
 samples/serialize.pl
