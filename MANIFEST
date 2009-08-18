@@ -8,6 +8,7 @@ lib/NetSDS/Class/Abstract.pm
 lib/NetSDS/Conf.pm
 lib/NetSDS/Const.pm
 lib/NetSDS/DBI.pm
+lib/NetSDS/DBI/Table.pm
 lib/NetSDS/Feature.pm
 lib/NetSDS/Logger.pm
 Makefile.PL
