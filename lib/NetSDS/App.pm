@@ -58,8 +58,7 @@ use warnings;
 
 use base 'NetSDS::Class::Abstract';
 
-
-use version; our $VERSION = '1.201';
+use version; our $VERSION = '1.202';
 
 use NetSDS::Logger;
 use NetSDS::Conf;
@@ -390,18 +389,21 @@ sub initialize {
 		Proc::Daemon::Init;
 	}
 
-	# Process PID file if necessary
-	if ( $this->use_pidfile() ) {
-		die "Already running!" if Proc::PID::File->running(
-			dir  => $this->pid_dir,
-			name => $this->name,
-		);
-	}
+	# Update PID if necessary
+	$this->{pid} = $$;
 
 	# Create syslog handler
 	if ( !$this->logger ) {
 		$this->logger( NetSDS::Logger->new( name => $this->{name} ) );
 		$this->log( "info", "Logger started" );
+	}
+
+	# Process PID file if necessary
+	if ( $this->use_pidfile() ) {
+		if ( Proc::PID::File->running( dir => $this->pid_dir, name => $this->name ) ) {
+			$this->log( "error", "Application already running, stop immediately!" );
+			die "Application already running, stop immediately!";
+		}
 	}
 
 	# Initialize configuration
@@ -526,7 +528,7 @@ sub add_feature {
 	$this->log( "info", "Feature added: $name => $class" );
 
 } ## end sub add_feature
-#***********************************************************************
+    #***********************************************************************
 
 =item B<finalize()> - switch to finalization stage
 
@@ -621,10 +623,11 @@ sub main_loop {
 	# Run processing hooks
 	while ( !$this->{to_finalize} ) {
 
+		# Call production code
 		$ret = $this->process();
 
 		# Process infinite loop
-		if ( !$this->{infinite} or $this->{to_finalize} ) {
+		unless ( $this->{infinite} ) {
 			$this->{to_finalize} = 1;
 		}
 	}
@@ -665,7 +668,7 @@ sub log {
 
 	return undef;
 
-} ## sub log
+}    ## sub log
 
 #***********************************************************************
 
@@ -738,12 +741,7 @@ sub config_file {
 		$file =~ s/([^\/])$/$1\//;
 		$conf_file = $file . $file_name;
 
-		# No config file in common place - try admin
-		unless ( -f $conf_file && -r $conf_file ) {
-			$conf_file = $file . "admin/" . $file_name;
-		}
-
-		# Last resort - local folder
+		# Last resort - local folder (use for debug, not production)
 		unless ( -f $conf_file && -r $conf_file ) {
 			$conf_file = "./" . $file_name;
 		}
