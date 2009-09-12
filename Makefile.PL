@@ -18,6 +18,8 @@ WriteMakefile
                            'Data::Structure::Util' => '0',
                            'FCGI' => '0',
                            'Getopt::Long' => '0',
+                           'JSON' => '2.0',
+                           'JSON::XS' => '2.0',
                            'Module::Build' => '0',
                            'POSIX' => '0',
                            'Proc::Daemon' => '0',

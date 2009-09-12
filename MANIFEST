@@ -9,6 +9,7 @@ lib/NetSDS/Conf.pm
 lib/NetSDS/Const.pm
 lib/NetSDS/DBI.pm
 lib/NetSDS/DBI/Table.pm
+lib/NetSDS/EDR.pm
 lib/NetSDS/Feature.pm
 lib/NetSDS/Logger.pm
 Makefile.PL
@@ -22,6 +23,7 @@ samples/app_simple.pl
 samples/daemon.pl
 samples/serialize.pl
 samples/test_codings.pl
+samples/test_edr.pl
 samples/test_fcgi.pl
 samples/testdb.pl
 t/01_load.t
