@@ -4,6 +4,7 @@ lib/NetSDS.pm
 lib/NetSDS/App.pm
 lib/NetSDS/App/FCGI.pm
 lib/NetSDS/App/JSRPC.pm
+lib/NetSDS/App/SMTPD.pm
 lib/NetSDS/Class/Abstract.pm
 lib/NetSDS/Conf.pm
 lib/NetSDS/Const.pm
@@ -29,3 +30,4 @@ samples/testdb.pl
 t/01_load.t
 t/02_pod.t
 t/03_pod_coverage.t
+t/04_smtpd-send.pl
