@@ -67,7 +67,7 @@ use Storable qw(nfreeze thaw);
 use Data::Structure::Util;
 
 
-use version; our $VERSION = '1.204';
+use version; our $VERSION = '1.205';
 
 #***********************************************************************
 
@@ -196,9 +196,9 @@ Return non object copy of object data structure.
 #-----------------------------------------------------------------------
 sub unbless {
 
-	my ( $self, $self ) = @_;
+	my ( $self, $ret_self ) = @_;
 
-	return Data::Structure::Util::unbless( $self ? $self : $self->clone );
+	return Data::Structure::Util::unbless( $ret_self ? $self : $self->clone );
 }
 
 #***********************************************************************

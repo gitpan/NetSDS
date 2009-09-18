@@ -46,7 +46,7 @@ use warnings;
 
 use base 'NetSDS::DBI';
 
-use version; our $VERSION = '1.204';
+use version; our $VERSION = '1.205';
 
 #===============================================================================
 #
@@ -81,9 +81,14 @@ sub new {
 		return $class->error('Table name is not specified to NetSDS::DBI::Table');
 	}
 
+	# 'fields' paramter is hash reference describing supported/allowed fields
+	#
+	if ( $params{fields} ) {
+	}
+
 	return $self;
 
-}
+} ## end sub new
 
 #***********************************************************************
 
@@ -127,8 +132,11 @@ sub fetch {
 	# Prepare expected fields list
 	my $req_fields = $params{fields} ? join( ',', @{ $params{fields} } ) : '*';
 
+	# Set default filter
+	my $default_filter = $self->{default_filter} ? " where " . join( " and ", @{ $self->{default_filter} } ) : '';
+
 	# Prepare WHERE filter
-	my $req_filter = $params{filter} ? " where " . join( " and ", @{ $params{filter} } ) : '';
+	my $req_filter = $params{filter} ? " where " . join( " and ", @{ $params{filter} } ) : $default_filter;
 
 	# Prepare results order
 	my $req_order = $params{order} ? " order by " . join( ", ", @{ $params{order} } ) : '';
@@ -306,7 +314,7 @@ sub update {
 	my $req_filter = $params{filter} ? " where " . join( " and ", @{ $params{filter} } ) : '';
 
 	my @up = ();
-	foreach my $key ( keys %{$params{set}} ) {
+	foreach my $key ( keys %{ $params{set} } ) {
 		push @up, "$key = " . $self->dbh->quote( $params{set}->{$key} );
 	}
 
@@ -317,12 +325,14 @@ sub update {
 
 #***********************************************************************
 
-=item B<get_count()> - retrieve number of contacts
+=item B<get_count(%params)> - retrieve number of records
 
-Just return total number of contacts by calling:
+Just return total number of records by calling:
 
 	# SELECT COUNT(id) FROM schema.table
 	my $count = $tbl->get_count();
+
+	my $count_active = $tbl->get_count(filter => ['active = true']);
 
 =cut 
 
@@ -332,10 +342,14 @@ Just return total number of contacts by calling:
 sub get_count {
 
 	my $self   = shift;
-	my %params = @_;
+	my $filter = \@_;
 
-	$params{fields} = ["COUNT(id) AS c"];
-	my @count = $self->fetch(%params);
+	# Fetch number of records
+	# SQL: select count(id) as c from $table where [filter]
+	my @count = $self->fetch(
+		fields => ['count(id) as c'],
+		filter => $filter,
+	);
 
 	return $count[0]->{c};
 }
@@ -403,6 +417,51 @@ sub delete {
 	# Remove records
 	$self->call( "delete from " . $self->{table} . $req_filter );
 
+}
+
+#***********************************************************************
+
+=item B<get_fields()> - get list of fields
+
+Example:
+
+	my @fields = @{ $tbl->get_fields() };
+	print "Table fields: " . join (', ', @fields);
+
+=cut 
+
+#-----------------------------------------------------------------------
+
+sub get_fields {
+	return [ keys %{ +shift->{'fields'} } ];
+}
+
+
+#***********************************************************************
+
+=item B<has_field($field)> - check if field exists
+
+Paramters: field name
+
+Example:
+
+	if ($tbl->has_field('uuid')) {
+		$tbl->call("delete tbldata where uuid=?", $uuid);
+	}
+
+B<NOTE>: this method works only for restricted tables that
+use C<fields> parameter at construction time.
+
+=cut 
+
+#-----------------------------------------------------------------------
+
+sub has_field {
+
+	# TODO 
+	# - check if fields defined at all
+	# - think about multiple values
+	return $_[0]->{'fields'}{ $_[1] } 
 }
 
 1;

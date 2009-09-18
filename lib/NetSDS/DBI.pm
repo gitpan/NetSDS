@@ -41,8 +41,7 @@ use DBI;
 
 use base 'NetSDS::Class::Abstract';
 
-
-use version; our $VERSION = '1.204';
+use version; our $VERSION = '1.205';
 
 #===============================================================================
 
@@ -113,6 +112,11 @@ sub new {
 		%params,
 	);
 
+	# Implement SQL debugging
+	if ($params{debug_sql}) {
+		$self->{debug_sql} = 1;
+	};
+
 	# Create object accessor for DBMS handler
 	$self->mk_accessors('dbh');
 
@@ -128,7 +132,6 @@ sub new {
 	return $self;
 
 } ## end sub new
-
 
 #***********************************************************************
 
@@ -182,6 +185,11 @@ sub call {
 
 	my ( $self, $sql, @params ) = @_;
 
+	# Debug SQL
+	if ($self->{debug_sql}) {
+		$self->log("debug", "SQL: $sql");
+	};
+
 	# First check connection and try to restore if necessary
 	unless ( $self->_check_connection() ) {
 		return $self->error("Database connection error!");
@@ -200,6 +208,36 @@ sub call {
 	return $sth;
 
 } ## end sub call
+
+#***********************************************************************
+
+=item B<fetch_call($sql, @params)> - call and fetch result
+
+Paramters: SQL query, parameters
+
+Returns: arrayref of records as hashrefs
+
+Example:
+
+	my $table_data = $db->fetch_call("select * from users");
+
+=cut 
+
+#-----------------------------------------------------------------------
+
+sub fetch_call {
+
+	my ( $self, $sql, @params ) = @_;
+
+	# Try to prepare and execute SQL statement
+	if ( my $sth = $self->call( $sql, @params ) ) {
+		# Fetch all data as arrayref of hashrefs
+		return $sth->fetchall_arrayref( {} );
+	} else {
+		return $self->error("Cant execute SQL: $sql");
+	}
+
+}
 
 #***********************************************************************
 
