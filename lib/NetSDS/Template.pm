@@ -35,7 +35,7 @@ use base qw(NetSDS::Class::Abstract);
 use HTML::Template::Pro;
 use NetSDS::Util::File;
 
-use version; our $VERSION = '1.205';
+use version; our $VERSION = '1.206';
 
 #===============================================================================
 #
@@ -81,6 +81,12 @@ sub new {
 
 			if ($tpl_content) {
 
+				# Prepare include path list
+				my $include_path = $params{include_path} ? $params{include_path} : undef;
+				my @inc = ();
+				if ( defined $include_path ) { push @inc, $include_path; }
+				push @inc, ( $params{dir} . '/inc', '/usr/share/NetSDS/templates/' );
+
 				# Create template processing object
 				my $tem = HTML::Template::Pro->new(
 					scalarref              => \$tpl_content,
@@ -89,15 +95,11 @@ sub new {
 					global_vars            => 1,
 					default_escape         => defined( $params{esc} ) ? $params{esc} : 'HTML',
 					search_path_on_include => 1,
-					path                   => [
-						$params{include_path} . '',        # implicit path definition
-						$params{dir} . '/inc',             # search inside subcatalog 'inc'
-						'/usr/share/NetSDS/templates/',    # global templates
-					]
+					path                   => \@inc,
 				);
 
 				$tpl->{$tpl_name} = $tem;
-			}
+			} ## end if ($tpl_content)
 
 		} ## end if ( $file =~ /(^.*)\.tmpl$/)
 
@@ -162,7 +164,7 @@ Michael Bochkaryov <misha@rattler.kiev.ua>
 
 =head1 LICENSE
 
-Copyright (C) 2008-2009 Michael Bochkaryov
+Copyright (C) 2008-2009 Net Style Ltd
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

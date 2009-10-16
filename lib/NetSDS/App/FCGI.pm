@@ -55,21 +55,17 @@ use base 'NetSDS::App';
 use CGI::Fast;
 use CGI::Cookie;
 
-use version; our $VERSION = '1.205';
+use version; our $VERSION = '1.206';
 
 #***********************************************************************
 
-=head1 CONSTRUCTOR
+=head1 CLASS API
 
 =over
 
 =item B<new()> - constructor
 
-Paramters: class parameters
-
-Returns:
-
-This method provides..... 
+Normally constructor of application framework shouldn't be invoked directly.
 
 =cut 
 
@@ -96,12 +92,6 @@ sub new {
 }
 
 #***********************************************************************
-
-=back
-
-=head1 CLASS AND OBJECT  METHODS
-
-=over
 
 =item B<cgi()> - accessor to CGI.pm request handler
 
@@ -286,6 +276,7 @@ sub main_loop {
 
 			# Send return data to client
 			if ( $self->data ) {
+				$| = 1;    # set autoflushing mode to avoid output buffering
 				binmode STDOUT;
 				print $self->data;
 			}
@@ -599,7 +590,7 @@ Michael Bochkaryov <misha@rattler.kiev.ua>
 
 =head1 LICENSE
 
-Copyright (C) 2008-2009 Michael Bochkaryov
+Copyright (C) 2008-2009 Net Style Ltd
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

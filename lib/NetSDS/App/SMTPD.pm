@@ -8,7 +8,7 @@ package NetSDS::App::SMTPD::Socket;
 use IO::Socket;
 use base 'NetSDS::App';
 
-use version; our $VERSION = '1.205';
+use version; our $VERSION = '1.206';
 
 sub new {
 	my ( $proto, %args ) = @_;
@@ -218,6 +218,11 @@ This module init a smtp-server.
 =item B<create_socket>
 
 Init a listening socket by creating a simple socket Super::create_socket and make it listening.
+
+=item B<data>
+
+Takes - a message that has been received, parses them and prepare 
+the structure of headers, body for next actions
 
 =item B<accept>
 

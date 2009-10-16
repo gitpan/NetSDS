@@ -13,6 +13,7 @@ lib/NetSDS/DBI/Table.pm
 lib/NetSDS/EDR.pm
 lib/NetSDS/Feature.pm
 lib/NetSDS/Logger.pm
+lib/NetSDS/Session.pm
 lib/NetSDS/Template.pm
 lib/NetSDS/Translate.pm
 Makefile.PL
@@ -25,6 +26,7 @@ samples/app_jsrpc.fcgi
 samples/app_simple.pl
 samples/daemon.pl
 samples/serialize.pl
+samples/test.edr
 samples/test_codings.pl
 samples/test_edr.pl
 samples/test_fcgi.pl
@@ -33,3 +35,5 @@ t/01_load.t
 t/02_pod.t
 t/03_pod_coverage.t
 t/04_smtpd-send.pl
+t/05-session.t
+t/06_methods_class_abstract.t

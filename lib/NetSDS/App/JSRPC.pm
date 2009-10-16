@@ -54,7 +54,7 @@ use JSON;
 use base 'NetSDS::App::FCGI';
 
 
-use version; our $VERSION = '1.205';
+use version; our $VERSION = '1.206';
 
 #===============================================================================
 #
@@ -91,7 +91,6 @@ This is internal method that implements JSON-RPC call processing.
 sub process {
 
 	my ($self) = @_;
-
 	# TODO - implement request validation
 	# Parse JSON-RPC2 request
 	my $http_request = $self->param('POSTDATA');
@@ -103,7 +102,7 @@ sub process {
 	if ( my ( $js_method, $js_params, $js_id ) = $self->_request_parse($http_request) ) {
 
 		# Try to call method
-		if ( $self->can($js_method) ) {
+		if ( $self->can_method($js_method) ) {
 
 			# Call method and hope it will give some response
 			my $result = $self->process_call( $js_method, $js_params );
@@ -154,6 +153,24 @@ sub process {
 	}
 
 } ## end sub process
+
+
+#***********************************************************************
+
+=item B<can_method($method_name)> - check method availability
+
+Paramters: method name (string)
+
+C<can_method()> 
+
+=cut 
+
+#-----------------------------------------------------------------------
+
+sub can_method {
+	my ($self, $method) = @_;
+	return $self->can($method);
+}
 
 #***********************************************************************
 
@@ -312,7 +329,7 @@ Michael Bochkaryov <misha@rattler.kiev.ua>
 
 =head1 LICENSE
 
-Copyright (C) 2008-2009 Michael Bochkaryov
+Copyright (C) 2008-2009 Net Style Ltd
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

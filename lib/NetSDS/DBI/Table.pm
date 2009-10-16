@@ -46,7 +46,7 @@ use warnings;
 
 use base 'NetSDS::DBI';
 
-use version; our $VERSION = '1.205';
+use version; our $VERSION = '1.206';
 
 #===============================================================================
 #
@@ -82,7 +82,6 @@ sub new {
 	}
 
 	# 'fields' paramter is hash reference describing supported/allowed fields
-	#
 	if ( $params{fields} ) {
 	}
 
@@ -136,7 +135,8 @@ sub fetch {
 	my $default_filter = $self->{default_filter} ? " where " . join( " and ", @{ $self->{default_filter} } ) : '';
 
 	# Prepare WHERE filter
-	my $req_filter = $params{filter} ? " where " . join( " and ", @{ $params{filter} } ) : $default_filter;
+	my $req_filter = ($params{filter} and grep { $_ } @{ $params{filter} }) ? 
+		" where " . join( " and ", grep { $_ } @{ $params{filter} } ) : $default_filter;
 
 	# Prepare results order
 	my $req_order = $params{order} ? " order by " . join( ", ", @{ $params{order} } ) : '';
@@ -194,13 +194,15 @@ sub insert_row {
 		push @values, $self->dbh->quote( $params{$key} );
 	}
 
+	my $return_value = $self->has_field('id') ? ' returning id' : '';
 	# Prepare SQL statement from fields and values lists
 	my $sql = 'insert into ' . $self->{table} . ' (' . join( ',', @fields ) . ')'    # fields list
 	  . ' values (' . join( ',', @values ) . ')'                                     # values list
-	  . ' returning id';                                                             # return "id" field
+	  . $return_value;                                                               # return "id" field
 
 	# Execute SQL query and fetch result
-	my ($row_id) = $self->call($sql)->fetchrow_array();
+	my $sth = $self->call($sql);
+	my ($row_id) = $return_value ? $sth->fetchrow_array : $sth->rows;
 
 	# Return "id" field from inserted row
 	return $row_id || $self->error( "Cant insert table record: " . $self->dbh->errstr );
@@ -320,7 +322,13 @@ sub update {
 
 	my $sql = "update " . $self->{table} . " set " . join( ', ', @up ) . $req_filter;
 	my $res = $self->call($sql);
+	
+	if ($self->dbh->errstr) {
+		$self->error( "Cant update message" . $self->dbh->errstr );
+		return;
+	};
 
+	return 1;
 }
 
 #***********************************************************************
@@ -343,7 +351,7 @@ sub get_count {
 
 	my $self   = shift;
 	my $filter = \@_;
-
+	
 	# Fetch number of records
 	# SQL: select count(id) as c from $table where [filter]
 	my @count = $self->fetch(
@@ -494,7 +502,7 @@ Michael Bochkaryov <misha@rattler.kiev.ua>
 
 =head1 LICENSE
 
-Copyright (C) 2008-2009 Michael Bochkaryov
+Copyright (C) 2008-2009 Net Style Ltd
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

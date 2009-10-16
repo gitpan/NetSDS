@@ -67,7 +67,7 @@ use Storable qw(nfreeze thaw);
 use Data::Structure::Util;
 
 
-use version; our $VERSION = '1.205';
+use version; our $VERSION = '1.206';
 
 #***********************************************************************
 
@@ -250,7 +250,7 @@ sub deserialize {
 
 #***********************************************************************
 
-=item B<nstore($file_name)> - store serialized object
+=item B<nstore($file_name)> - serialize and store object
 
 Save serialized object to file
 
@@ -293,7 +293,7 @@ sub log {
 
 	my ( $self, $level, $msg ) = @_;
 
-	if ( $self->logger() ) {
+	if ( $self->logger() and $self->logger()->can('log') ) {
 		$self->logger->log( $level, $msg );
 	} else {
 		warn "[$level] $msg\n";
@@ -337,7 +337,7 @@ Michael Bochkaryov <misha@rattler.kiev.ua>
 
 =head1 LICENSE
 
-Copyright (C) 2008-2009 Michael Bochkaryov
+Copyright (C) 2008-2009 Net Style Ltd
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
