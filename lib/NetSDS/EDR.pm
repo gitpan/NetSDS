@@ -53,9 +53,9 @@ use warnings;
 
 use JSON;
 use NetSDS::Util::DateTime;
-use base qw(NetSDS::Class::Abstract);
+use base 'NetSDS::Class::Abstract';
 
-use version; our $VERSION = '1.206';
+use version; our $VERSION = '1.300';
 
 #===============================================================================
 #
@@ -92,7 +92,7 @@ sub new {
 	if ( $params{filename} ) {
 		$self->{edr_file} = $params{filename};
 	} else {
-		return $class->error("Required mandatory 'filename' paramter for EDR");
+		return $class->error("Absent mandatory parameter 'filename'");
 	}
 
 	return $self;
@@ -119,6 +119,7 @@ sub write {
 
 	open EDRF, ">>$self->{edr_file}";
 
+	# Write records - one record per line
 	foreach my $rec (@records) {
 		my $edr_json = $self->{encoder}->encode($rec);
 		print EDRF "$edr_json\n";
@@ -138,17 +139,9 @@ __END__
 
 See C<samples> directory.
 
-=head1 BUGS
-
-Unknown yet
-
-=head1 SEE ALSO
-
-None
-
 =head1 TODO
 
-None
+* Handle I/O errors when write EDR data.
 
 =head1 AUTHOR
 
@@ -156,7 +149,7 @@ Michael Bochkaryov <misha@rattler.kiev.ua>
 
 =head1 LICENSE
 
-Copyright (C) 2008-2009 Net Style Ltd
+Copyright (C) 2008-2009 Net Style Ltd.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

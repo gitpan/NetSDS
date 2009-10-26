@@ -6,7 +6,6 @@
 #
 #       AUTHOR:  Michael Bochkaryov (Rattler), <misha@rattler.kiev.ua>
 #      COMPANY:  Net.Style
-#      VERSION:  1.0
 #      CREATED:  03.08.2009 13:34:51 UTC
 #===============================================================================
 
@@ -41,9 +40,9 @@ use POSIX;
 use Locale::gettext;
 use NetSDS::Const;
 
-use base qw(NetSDS::Class::Abstract);
+use base 'NetSDS::Class::Abstract';
 
-use version; our $VERSION = '1.206';
+use version; our $VERSION = '1.300';
 
 #===============================================================================
 #
@@ -79,6 +78,7 @@ sub new {
 		%params,
 	);
 
+	# Initialize proper locale
 	setlocale( LC_MESSAGES, $locale{$self->{lang}} );
 	$self->{translator} = Locale::gettext->domain($self->{domain});
 
@@ -112,9 +112,11 @@ __END__
 
 =back
 
-=head1 BUGS
+=head1 TODO
 
-Unknown yet
+1. Make configurable language to locale conversion in constructor.
+
+2. Implement placeholders support provided by gettext.
 
 =head1 SEE ALSO
 
@@ -126,7 +128,7 @@ Michael Bochkaryov <misha@rattler.kiev.ua>
 
 =head1 LICENSE
 
-Copyright (C) 2008-2009 Net Style Ltd
+Copyright (C) 2008-2009 Net Style Ltd.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

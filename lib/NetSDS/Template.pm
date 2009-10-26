@@ -30,15 +30,14 @@ use 5.8.0;
 use strict;
 use warnings;
 
-use base qw(NetSDS::Class::Abstract);
+use base 'NetSDS::Class::Abstract';
 
 use HTML::Template::Pro;
 use NetSDS::Util::File;
 
-use version; our $VERSION = '1.206';
+use version; our $VERSION = '1.300';
 
 #===============================================================================
-#
 
 =head1 CLASS API
 
@@ -112,9 +111,18 @@ sub new {
 
 #***********************************************************************
 
-=item B<render($tmpl_name, %params)> - render template with paramters
+=item B<render($tmpl_name, %params)> - render document by template and paramters
 
+This method prepares set of parameters and applies them to given template.
+Return is a ready for output document after processing.
+
+Example:
+
+	# Simple template rendering with scalar parameters
 	my $str = $tmp->render('main', title => 'Main Page');
+
+	# Rendering template with array parameters
+	my $str2 = $tmp->render('list', title => 'Statistics', users => \@users_list);
 
 =cut
 
@@ -130,9 +138,11 @@ sub render {
 		return $self->error("Wrong template name: '$name'");
 	}
 
+	# Clear previously set paramters and change to new
 	$tpl->clear_params();
 	$tpl->param(%params);
 
+	# Return finally rendered document
 	return $tpl->output;
 }
 
@@ -152,19 +162,23 @@ Unknown yet
 
 =head1 SEE ALSO
 
-None
+L<HTML::Template::Pro>, L<HTML::Template>
 
 =head1 TODO
 
-None
+1. Add i18n support to process multilingual templates.
 
 =head1 AUTHOR
 
 Michael Bochkaryov <misha@rattler.kiev.ua>
 
+=head1 THANKS
+
+Igor Vlasenko (http://search.cpan.org/~viy/) for HTML::Template::Pro
+
 =head1 LICENSE
 
-Copyright (C) 2008-2009 Net Style Ltd
+Copyright (C) 2008-2009 Net Style Ltd.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
