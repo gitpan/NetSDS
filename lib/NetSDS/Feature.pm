@@ -65,7 +65,7 @@ use warnings;
 use base qw(Class::Accessor Class::ErrorHandler);
 
 
-use version; our $VERSION = '1.300';
+use version; our $VERSION = '1.301';
 
 #===============================================================================
 
@@ -90,6 +90,7 @@ sub create {
 
 	bless $self, $class;
 
+	# Module specific initialization
 	$self->init();
 
 	return $self;
@@ -101,6 +102,21 @@ sub create {
 =item B<init()> - feature initialization 
 
 This method should be rewritten with feature functionality implementation.
+It's possibly to use application and configuration handlers at this time.
+
+Example:
+
+	sub init {
+		my ($self) = @_;
+
+		$self->{answer} = $self->conf->{answer} || '42';
+
+		my $pid = $self->app->pid();
+
+		if ($self->app->daemon()) {
+			$self->log("info", "Seems we are in a daemon mode");
+		}
+	}
 
 =cut 
 
@@ -148,6 +164,11 @@ __PACKAGE__->mk_ro_accessors('conf');
 
 =item B<log($level, $message)> - implements logging
 
+Example:
+
+	# Write log message
+	$self->log("info", "Application does something interesting.");
+
 See L<NetSDS::Logger> documentation for details.
 
 =cut 
@@ -172,22 +193,35 @@ __END__
 
 See C<samples/app_features.pl> script.
 
-=head1 BUGS
-
-Unknown yet
-
 =head1 SEE ALSO
 
-L<NetSDS::App>
+=over
 
-=head1 TODO
+=item * L<NetSDS::App>
 
-None
+=back
 
 =head1 AUTHOR
 
 Michael Bochkaryov <misha@rattler.kiev.ua>
 
-=cut
+=head1 LICENSE
 
+Copyright (C) 2008-2009 Net Style Ltd.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+=cut
 

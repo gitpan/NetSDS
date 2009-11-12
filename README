@@ -7,16 +7,31 @@ DESCRIPTION
 
     Perl5 - default programming language
     PostgreSQL - default DBMS
+    MemcacheQ - message queue manager
     Apache - HTTP server with FastCGI support
     Kannel - SMS and WAP gateway
     Asterisk - VoIP / telephony applications
+    Mbuni - MMSC and MMS VAS gateway
 
 COMPONENTS
     * NetSDS::Class::Abstract - abstract class for other NetSDS classes.
     * NetSDS::App - common application framework class.
     * NetSDS::App::FCGI - FastCGI applicatrion framework
+    * NetSDS::App::JSRPC - JSON-RPC server framework
     * NetSDS::Conf - configuration files management class.
     * NetSDS::Logger - syslog API.
+    * NetSDS::DBI - DBI wrapper for DBMS integration.
+    * NetSDS::DBI::Table - SQL table data processing API.
+    * NetSDS::EDR - writing event detail records (EDR).
+
+SEE ALSO
+    <http://www.netstyle.com.ua> - Net Style Ltd. Company that develops
+    NetSDS.
+    <http://netsds.sourceforge.net/> - NetSDS page at SourceForge
+    <http://www.asterisk.org> - Asterisk IP PBX
+    <http://www.kannel.org> - Kannel WAP/SMS gateway
+    <http://www.mbuni.org> - Mbuni MMSC and MMS VAS gateway
+    <http://www.postgresql.org> - PostgreSQL object-relational DBMS
 
 AUTHORS
     Michael Bochkaryov <misha@rattler.kiev.ua>

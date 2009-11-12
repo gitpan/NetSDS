@@ -26,7 +26,6 @@ samples/app_jsrpc.fcgi
 samples/app_simple.pl
 samples/daemon.pl
 samples/serialize.pl
-samples/test.edr
 samples/test_codings.pl
 samples/test_edr.pl
 samples/test_fcgi.pl
@@ -34,5 +33,4 @@ samples/testdb.pl
 t/01_load.t
 t/02_pod.t
 t/03_pod_coverage.t
-t/04_smtpd-send.pl
 t/06_methods_class_abstract.t

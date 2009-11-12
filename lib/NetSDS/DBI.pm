@@ -41,15 +41,15 @@ use DBI;
 
 use base 'NetSDS::Class::Abstract';
 
-use version; our $VERSION = '1.300';
+use version; our $VERSION = '1.301';
 
 #===============================================================================
 
-=head1 CLASS METHODS
+=head1 CLASS API
 
 =over
 
-=item B<new([...])> - constructor
+=item B<new(%params)> - class constructor
 
     $dbh = NetSDS::DBI->new(
 		dsn    => 'dbi:Pg:dbname=test;host=127.0.0.1;port=5432',
@@ -98,7 +98,7 @@ sub new {
 		}
 
 	} else {
-		return $class->error("Cant initialize DBI connection without DSN");
+		return $class->error("Can't initialize DBI connection without DSN");
 	}
 
 	# initialize parent class
@@ -113,9 +113,9 @@ sub new {
 	);
 
 	# Implement SQL debugging
-	if ($params{debug_sql}) {
+	if ( $params{debug_sql} ) {
 		$self->{debug_sql} = 1;
-	};
+	}
 
 	# Create object accessor for DBMS handler
 	$self->mk_accessors('dbh');
@@ -186,9 +186,9 @@ sub call {
 	my ( $self, $sql, @params ) = @_;
 
 	# Debug SQL
-	if ($self->{debug_sql}) {
-		$self->log("debug", "SQL: $sql");
-	};
+	if ( $self->{debug_sql} ) {
+		$self->log( "debug", "SQL: $sql" );
+	}
 
 	# First check connection and try to restore if necessary
 	unless ( $self->_check_connection() ) {
@@ -199,7 +199,7 @@ sub call {
 	# FIXME my $sth = $self->dbh->prepare_cached($sql);
 	my $sth = $self->dbh->prepare($sql);
 	unless ($sth) {
-		return $self->error("Cant prepare SQL query: $sql");
+		return $self->error("Can't prepare SQL query: $sql");
 	}
 
 	# Execute SQL query
@@ -219,7 +219,21 @@ Returns: arrayref of records as hashrefs
 
 Example:
 
+	# SQL DDL script:
+	# create table users (
+	# 	id serial,
+	# 	login varchar(32),
+	# 	passwd varchar(32)
+	# );
+
+	# Now we fetch all data to perl structure
 	my $table_data = $db->fetch_call("select * from users");
+
+	# Process this data
+	foreach my $user (@{$table_data}) {
+		print "User ID: " . $user->{id};
+		print "Login: " . $user->{login};
+	}
 
 =cut 
 
@@ -234,9 +248,67 @@ sub fetch_call {
 		# Fetch all data as arrayref of hashrefs
 		return $sth->fetchall_arrayref( {} );
 	} else {
-		return $self->error("Cant execute SQL: $sql");
+		return $self->error("Can't execute SQL: $sql");
 	}
 
+}
+
+#***********************************************************************
+
+=item B<begin()> - start transaction
+
+=cut
+
+sub begin {
+
+	my ($self) = @_;
+
+	return $self->dbh->begin_work();
+}
+
+#***********************************************************************
+
+=item B<commit()> - commit transaction
+
+=cut
+
+sub commit {
+
+	my ($self) = @_;
+
+	return $self->dbh->commit();
+}
+
+#***********************************************************************
+
+=item B<rollback()> - rollback transaction
+
+=cut
+
+sub rollback {
+
+	my ($self) = @_;
+
+	return $self->dbh->rollback();
+}
+
+#***********************************************************************
+
+=item B<quote()> - quote SQL string
+
+Example:
+
+	# Encode $str to use in queries
+	my $str = "some crazy' string; with (dangerous characters";
+	$str = $db->quote($str);
+
+=cut
+
+sub quote {
+
+	my ( $self, $str ) = @_;
+
+	return $self->dbh->quote($str);
 }
 
 #***********************************************************************
@@ -334,7 +406,7 @@ sub _connect {
 		}
 
 	} else {
-		return $self->error( "Cant connect to DBMS: " . $DBI::errstr );
+		return $self->error( "Can't connect to DBMS: " . $DBI::errstr );
 	}
 
 } ## end sub _connect

@@ -67,7 +67,7 @@ our $_ERRCODE;    # error code
 
 use Data::Structure::Util;    # unblessing objects
 
-use version; our $VERSION = '1.300';
+use version; our $VERSION = '1.301';
 
 #***********************************************************************
 
@@ -249,7 +249,7 @@ Example 1: set class error
 
 Example 2: set object error with code
 
-	$obj->error("Cant launch rocket", BUG_STUPID);
+	$obj->error("Can't launch rocket", BUG_STUPID);
 
 =cut
 

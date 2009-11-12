@@ -1,12 +1,12 @@
 #===============================================================================
 #
-#         FILE:  NetSDS.pm
+#       MODULE:  NetSDS
 #
 #  DESCRIPTION:  NetSDS framework
 #
 #       AUTHOR:  Michael Bochkaryov (Rattler), <misha@rattler.kiev.ua>
 #      COMPANY:  Net.Style
-#      CREATED:  24.04.2008 11:42:42 EEST
+#
 #===============================================================================
 
 package NetSDS;
@@ -15,7 +15,7 @@ use 5.8.0;
 use strict;
 use warnings;
 
-use version; our $VERSION = '1.300';
+use version; our $VERSION = '1.301';
 
 1;
 
@@ -34,11 +34,15 @@ the following technologies:
 
 =item B<PostgreSQL> - default DBMS
 
+=item B<MemcacheQ> - message queue manager
+
 =item B<Apache> - HTTP server with FastCGI support
 
 =item B<Kannel> - SMS and WAP gateway
 
 =item B<Asterisk> - VoIP / telephony applications
+
+=item B<Mbuni> - MMSC and MMS VAS gateway
 
 =back
 
@@ -52,9 +56,35 @@ the following technologies:
 
 =item * L<NetSDS::App::FCGI> - FastCGI applicatrion framework
 
+=item * L<NetSDS::App::JSRPC> - JSON-RPC server framework
+
 =item * L<NetSDS::Conf> - configuration files management class.
 
 =item * L<NetSDS::Logger> - syslog API.
+
+=item * L<NetSDS::DBI> - DBI wrapper for DBMS integration.
+
+=item * L<NetSDS::DBI::Table> - SQL table data processing API.
+
+=item * L<NetSDS::EDR> - writing event detail records (EDR).
+
+=back
+
+=head1 SEE ALSO
+
+=over
+
+=item L<http://www.netstyle.com.ua> - Net Style Ltd. Company that develops NetSDS.
+
+=item L<http://netsds.sourceforge.net/> - NetSDS page at SourceForge
+
+=item L<http://www.asterisk.org> - Asterisk IP PBX
+
+=item L<http://www.kannel.org> - Kannel WAP/SMS gateway
+
+=item L<http://www.mbuni.org> - Mbuni MMSC and MMS VAS gateway
+
+=item L<http://www.postgresql.org> - PostgreSQL object-relational DBMS
 
 =back
 
